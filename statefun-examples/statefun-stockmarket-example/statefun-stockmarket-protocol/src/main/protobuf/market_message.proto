@@ -1,0 +1,138 @@
+syntax = "proto3";
+
+package org.apache.flink.statefun.examples.kafka;
+option java_package = "org.apache.flink.statefun.examples.stockmarket.protocol.generated";
+option java_multiple_files = true;
+
+
+message Timestamp {
+    int64 seconds = 1;
+    int32 nanos = 2;
+}
+enum Market {
+    XSTO = 0; //Stockholm
+    XFRA = 1; //Frankfurt
+    XNYS = 2; //New York
+    XSES = 3; //Singapore
+}
+message MarketMessage {
+    Timestamp timestamp = 1;
+    Market market = 2;
+    oneof MessageType {
+        Instrument instrument = 5;
+        Participant participant = 6;
+        Trade trade = 7;
+        StateChange stateChange = 8;
+        Order order = 9;
+    }
+}
+
+message Instrument {
+    string id = 1;
+    string name = 2;
+}
+
+message Participant {
+    string id = 1;
+    string name = 2;
+}
+
+message Order {
+    string instrumentId = 1;
+    string participantId = 2;
+    string subClientId = 3;
+
+    enum Side {
+        BUY = 0;
+        SELL = 1;
+    }
+    Side side = 4;
+
+    enum Currency {
+        SEK = 0;
+        EUR = 1;
+        USD = 2;
+        SGD = 3;
+    }
+    Currency currency = 5;
+    double price = 6;
+    enum STATUS {
+        MATCHED = 0;
+        CANCELLED = 1;
+    }
+}
+
+message Trade {
+    string instrumentId = 1;
+    string participantId = 2;
+    string subClientId = 3;
+    string counterPartyId = 4;
+
+    enum Side {
+        BUY = 0;
+        SELL = 1;
+    }
+    Side side = 5;
+
+    enum Currency {
+        SEK = 0;
+        EUR = 1;
+        USD = 2;
+        SGD = 3;
+    }
+    Currency currency = 6;
+
+    double price = 7;
+    double volume = 8;
+    double settlementAmount = 9;
+}
+
+message StateChange {
+    string instrumentId = 1;
+
+    enum State {
+        OPENED = 0;
+        HALTED = 1;
+        CLOSED = 2;
+    }
+    State state = 2;
+}
+
+
+/*Internal messages */
+message SelfMessage {}
+
+message SubscribeMessage {
+    int32 numPartitions = 1;
+}
+message UnSubscribeMessage {}
+
+/* Request */
+message RequestMessage {
+    oneof RequestType {
+        InstrumentRequest instrument = 5;
+        ParticipantRequest participant = 6;
+    }
+}
+message InstrumentRequest {
+    string instrumentId = 1;
+}
+message ParticipantRequest {
+    string participantId = 1;
+}
+
+/* Response */
+message ResponseMessage {
+    oneof ResponseType {
+        InstrumentResponse instrument = 5;
+        ParticipantResponse participant = 6;
+    }
+}
+message InstrumentResponse {
+    Instrument instrument = 1;
+}
+message ParticipantResponse {
+    Participant participant = 1;
+}
+
+

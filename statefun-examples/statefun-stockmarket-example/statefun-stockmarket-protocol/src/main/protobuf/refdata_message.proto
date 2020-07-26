@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package org.apache.flink.statefun.examples.kafka;
+option java_package = "org.apache.flink.statefun.examples.stockmarket.protocol.generated";
+option java_multiple_files = true;
+
+message RefdataMessage {
+    string id = 1;
+    oneof MessageType {
+        Instrument instrument = 5;
+        Participant participant = 6;
+        Account account = 7;
+    }
+}
+message Instrument {
+    string id = 1;
+    string name = 2;
+}
+message Participant {
+    string id = 1;
+    string name = 2;
+}
+message Account {
+    string id = 1;
+    string name = 2;
+}
+

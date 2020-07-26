@@ -1,0 +1,48 @@
+#
+# Copyright 2019 Ververica GmbH.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+module:
+  meta:
+    type: remote
+  spec:
+    functions:
+      - function:
+          meta:
+            type: Surveillance/FnCacheInstrument
+          spec:
+            host: localhost
+            port: 5000
+    routers:
+      - router:
+          meta:
+            type: org.apache.flink.statefun.sdk/protobuf-router
+          spec:
+            ingress: surveillance/incoming
+            target: "Surveillance/FnCacheInstrument/{{$.market}}"
+            messageType: org.apache.flink.statefun.examples.stockmarket.MarketMessage
+            descriptorSet: classpath:market_message-descriptors.bin
+    ingresses:
+      - ingress:
+          meta:
+            type: org.apache.flink.statefun.sdk.kafka/protobuf-kafka-connector
+            id: surveillance/incoming
+          spec:
+            address: localhost:9092
+            topics:
+              - incoming
+            properties:
+              - group.id: surveillance
+            messageType: org.apache.flink.statefun.examples.stockmarket.MarketMessage
+            descriptorSet: classpath:market_message-descriptors.bin

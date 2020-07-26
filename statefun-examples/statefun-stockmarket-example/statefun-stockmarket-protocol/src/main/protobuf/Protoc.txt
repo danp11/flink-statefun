@@ -1,0 +1,15 @@
+MarketMessage:
+protoc -I=. --java_out=../java market_message.proto
+protoc market_message.proto  --include_imports --descriptor_set_out ../resources/market_message-descriptors.bin
+
+----------------------------------------------------
+RefdataMessage
+protoc -I=. --java_out=../java refdata_message.proto
+protoc refdata_message.proto  --include_imports --descriptor_set_out ../resources/refdata_message-descriptors.bin
+
+
+For now, manual editing:
+-> MarketMessage must implement HasTimestamp, HasMarket, HasKafkaPartition
+-> StateChange must implement HasStateChange
+
+
