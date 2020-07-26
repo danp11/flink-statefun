@@ -57,6 +57,7 @@ under the License.
         <module>statefun-flink</module>
         <module>statefun-quickstart</module>
         <module>statefun-testutil</module>
+		<module>statefun-pubsub</module>
 
         <!--
             Always build the end-to-end tests module last,
